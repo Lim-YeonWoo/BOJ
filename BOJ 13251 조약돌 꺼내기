@@ -1,0 +1,61 @@
+// BOJ 13251 조약돌 꺼내기
+
+/* 문제 분류: 조합론*/
+
+/* 문제 설명: 
+*	확률 구하기
+*/
+
+/* 문제 풀이:
+	a컬러에 대한 확률, b 컬러에 대한 확률...을 미리 구해서
+	그것들을 더하는 방법으로 구한다.
+*/
+
+/* 어려웠던 점 & 다시 한번 살펴볼 부분:
+* 확통문제처럼 aCk+bCk / NCk로 구하려고 했으나, 이렇게 하면 범위 초과로 인해 오답이 나온다.
+* 예를 들어, 100C50만 해도 long long 범위보다도 더 커져서 오버플로우가 발생하기 때문이다.
+* 앞으로 확률문제를 풀 때, 특히 조합을 사용할 때는 오버플로우에 유의해야겠다.
+*/
+
+#include <iostream>
+
+using namespace std;
+using ll = long long;
+
+int N=0; //전체 조약돌 개수
+int M, K;
+int num[51];
+double ans;
+
+int main(void) {
+	ios::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+	// 입력
+	cin >> M;
+
+	for (int i = 0; i < M; i++) {
+		cin >> num[i];
+		N += num[i];
+	}
+
+	cin >> K;
+
+	// 계산
+	for (int i = 0; i < M; i++) {
+		double temp = 1.0;
+		
+		if (K > num[i])	continue;
+		
+		for (int j = 0; j < K; j++)
+		{
+			temp *= (double)(num[i] - j) / (N - j);
+		}
+		ans += temp;
+	}
+	
+	cout << fixed;
+	cout.precision(15);
+	cout << ans;
+
+	return 0;
+}
