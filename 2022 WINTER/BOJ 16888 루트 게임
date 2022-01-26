@@ -1,0 +1,65 @@
+// BOJ 16888 루트 게임
+
+/* 문제 분류: 다이나믹 프로그래밍 */
+
+/* 문제 설명: 
+*	
+*/
+
+/* 문제 풀이:
+*   가능한 모든 N에 대해서 누가 이길지를 미리 다 구해두고, 입력받으면 출력만 해주면됨.
+* 
+	N=i^2으로 제곱수이면, 먼저 공격한 사람(선공)이 필승!
+
+	1. 초기화
+	필승이 되는 경우를 arr[i]에 true로 저장.
+	arr[2]=false;로 초기화.
+
+	2. arr[i+j*j]=true로 처리
+
+*/
+
+/* 어려웠던 점 & 다시 한번 살펴볼 부분:
+	
+*/
+
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+const int MAX = 1000000;
+
+bool arr[MAX + 1] = { false };
+
+int main(void) {
+	ios::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+	//초기화
+	arr[1] = true;
+	arr[2] = false;
+
+	for (int i = 1; i * i <= MAX; i++) { //N이 제곱수면 선공이 이김
+		arr[i * i] = true;
+	}
+
+	for (int i = 2; i <= MAX; i++) {
+		if (!arr[i]) { //현재 상황이 선공이 지는 상황이면, (후공이 이기는 상황이면)
+			for (int j = 1; i + j * j <= MAX; j++) { //이 상황을 만드는 모든 상황은 선공이 승리.
+				arr[i + j * j] = true;
+			}
+		}
+	}
+
+	int T;
+	cin >> T;
+
+	while (T--) {
+		int N;
+		cin >> N;
+
+		cout << (arr[N] ? "koosaga" : "cubelover") << '\n';
+	}
+
+	return 0;
+}
