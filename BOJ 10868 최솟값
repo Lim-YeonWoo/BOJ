@@ -1,0 +1,84 @@
+// BOJ 10868 최솟값
+
+/* 문제 분류: segment tree */
+
+/* 문제 설명: 
+*	N개의 정수가 주어지고, (a, b)쌍이 M개 주어졌을 때,
+*	a번째수부터 b번째수까지의 최솟값을 구해라. 총 M개의 최솟값을 출력하면 됨.
+*/
+
+/* 문제 풀이:
+	N<=100,000 이고 M<=100,000이므로
+	longlong형을 써야하고, 시간복잡도에 주의해야한다.
+
+	단순하게 반복문을 써서 최솟값을 구하면, 최대10만인 배열을 10만번 탐색해야해서 시간초과가 발생하므로,
+	세그먼트 트리를 이용해 해결한다.
+	이때, 현재 노드가 내가 찾고자하는 구간과 완전히 상관없는구간을 갖는 노드면, INF(무한대의 값)을 return했다.
+	(최솟값을 구하고 싶은 것 이므로 상관없는 구간이라면 무시하면 되므로)
+
+	root노드에는 1~N까지의 최솟값, 그 다음 레벨에는 1~N/2의 최솟값, N/2+1~N까지의 최솟값.... 
+	단말노드에는	1번째노드, 2번째 노드 ... N번째 노드.
+*/
+
+/* 어려웠던 점 & 다시 한번 살펴볼 부분:
+	
+*/
+
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+const int MAX = 1e5 + 1; 
+const int INF = 1e9 + 1; 
+
+long long arr[MAX]; //1~N번째 수를 입력받은대로 저장
+long long segmentTree[4 * MAX]; 
+
+//SegmentTree 초기화함수
+long long init_SegmentTree(int left, int right, int node) { 
+	if (left == right) { 
+		return segmentTree[node] = arr[left]; 
+	} 
+
+	int mid = (left + right) / 2; 
+
+	return segmentTree[node] = min(init_SegmentTree(left, mid, node * 2), init_SegmentTree(mid + 1, right, node * 2 + 1));
+} 
+
+//주어진 (a,b)쌍에 대해 SegmentTree를 이용해, a번째수부터 b번째수까지의 최솟값을 구해 return하는 함수
+long long query(int left, int right, int node, int nodeLeft, int nodeRight) {
+	if (nodeLeft > right || nodeRight < left) { 
+		return INF; 
+	} 
+	
+	if (nodeLeft >= left && right >= nodeRight) { 
+		return segmentTree[node]; 
+	} 
+	
+	int mid = (nodeLeft + nodeRight) / 2; 
+	
+	return min(query(left, right, node * 2, nodeLeft, mid), query(left, right, node * 2 + 1, mid + 1, nodeRight)); 
+}
+
+int main(void) {
+	ios::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+	int N, M; 
+	cin >> N >> M; 
+	
+	for (int i = 1; i <= N; i++) { 
+		cin >> arr[i]; 
+	} 
+	
+	init_SegmentTree(1, N, 1);
+	
+	for (int i = 1; i <= M; i++) { 
+		int a, b; 
+		cin >> a >> b; 
+
+		cout << query(a, b, 1, 1, N) << "\n"; 
+	}
+
+	return 0;
+}
