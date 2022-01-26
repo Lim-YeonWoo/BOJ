@@ -1,0 +1,60 @@
+// BOJ 13249 공의 충돌
+
+/* 문제 분류: 확률론*/
+
+/* 문제 설명: 
+*	
+*/
+
+/* 문제 풀이:
+
+	1. 공의 이동
+	공1(왼), 공2(오)가 서로 충돌하면 방향이 바뀐다.
+	공1(오), 공2(왼)이 된다.
+	그러나 결국 전체적으로 보면, 공들은 구분되지 않으므로, 공2(오) 공1(왼)으로 계속 그대로 이동한다고 보면된다.
+
+	2. 충돌횟수 기대값 구하기
+
+*/
+
+/* 어려웠던 점 & 다시 한번 살펴볼 부분:
+	1. 공의 방향이 바뀐다고 생각하니까 너무 복잡하다 느껴져서 예제3을 이해하지 못했다.
+
+*/
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int n, x, t;
+int tmp;
+vector<int> v;
+int cnt;
+
+int main(void) {
+	ios::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+	cin >> n;
+
+	//공의 위치를 받아서 순서대로 sorting 한다.
+	for (int i = 0; i < n; i++) {
+		cin >> tmp;
+		v.push_back(tmp);
+	}
+	sort(v.begin(), v.end());
+
+	cin >> t;
+
+	for (int i = 0; i < n; i++) {
+		for (int j = i + 1; j < n; j++) {
+			if (abs(v[i] - v[j]) <= 2 * t)
+				cnt++;
+		}
+	}
+
+	cout << (double)cnt/4 << '\n';	
+	
+	return 0;
+}
