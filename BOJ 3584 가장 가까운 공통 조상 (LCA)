@@ -1,0 +1,70 @@
+// BOJ 3584 가장 가까운 공통 조상 (LCA)
+
+/* 문제 분류: 그래프, 깊이 우선 탐색, 최소 공통 조상*/
+
+/* 문제 설명:
+*	루트가 있는 트리가 주어지고,
+*	그 트리 상의 두 정점이 주어질 때,
+*	그들의 가장 가까운 공통 조상 (Nearest Common Ansector)을 구해라.
+*	LCA는 두 노드를 모두 자손으로 가지면서, 깊이가 가장 깊은 노드를 말한다.
+*/
+
+/* 문제 풀이:
+*	두 노드 u,v를 입력 받고, 
+*	u부터 루트노드까지 올라가면서 방문했다는 표시를 한다.
+*	마찬가지로, v부터 루트노드까지 올라가면서 visited[]를 확인했을때, 
+*	u가 방문했던 곳이라면 최소 공통 조상 발견!
+*/
+
+/* 어려웠던 점 & 다시 한번 살펴볼 부분:
+*	딱히 없었다.
+*/
+
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+int parent[10001];
+bool visit[10001];
+int T, N, A, B, u, v;
+
+int main(void) {
+	ios::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+	cin >> T;
+	while (T--) {
+		cin >> N;
+
+		// 초기화
+		for (int i = 1; i <= N; i++) {
+			visit[i] = false;
+			parent[i] = i;
+		}
+
+		// 간선 입력 > parent[]배열에 저장
+		for (int i = 0; i < N - 1; i++) {
+			cin >> A >> B;
+			parent[B] = A;
+		}
+
+		// LCA 찾기
+		cin >> u >> v;
+		visit[u] = true;
+
+		//u부터 루트노드까지 올라가기
+		while (u != parent[u]) {
+			u = parent[u];
+			visit[u] = true;
+		}
+
+		//v부터 루트노드까지 올라가기
+		while (true) {
+			if (visit[v]) { //u가 방문했던 곳이랑 겹치면, 그것을 출력. 그것이 LCA.
+				cout << v << '\n';
+				break;
+			}
+			v = parent[v];
+		}
+	}
+}
