@@ -1,0 +1,72 @@
+// BOJ 9576 책 나눠주기
+
+/* 문제 분류: 그리디 알고리즘, 이분 매칭*/
+
+/* 문제 설명:
+*	1~N까지 번호가 메겨져있는 총 N권의 책을 나눠준다.
+*	총 M명의 학생이 (a,b)쌍을 제시하고, a<= 책번호 <=b 인 책 중에 한권을 나눠준다.
+*	해당하는 책이 없으면 그 학생한테는 주지 않는다.
+*	책을 줄 수 있는 최대 학생 수를 구해라.
+*/
+
+/* 문제 풀이:
+*	그리디 기법을 이용한다.
+*	(a,b)쌍을 b를 기준으로 오름차순으로 정렬한 후,
+*	범위에 해당되는 책 중에서 가장 작은 책을 계속해서 나눠주면 된다.
+*/
+
+/* 어려웠던 점 & 다시 한번 살펴볼 부분:
+*	딱히 없었다.
+*/
+
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+//sorting을 위한 cmp함수
+bool cmp(pair<int, int> x, pair<int, int>y) {
+	if (x.second != y.second) //b가 같지 않으면, b를 기준으로 오름차순.
+		return x.second < y.second;
+
+	//b가 같은 경우는, a를 기준으로 오름차순.
+	return x.first < y.first;
+}
+
+int main(void) {
+	ios::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+	int T;
+	cin >> T;
+
+	while (T--) { //test case만큼 반복
+		int N, M;
+		cin >> N >> M;
+
+		vector<pair<int, int>> v;
+		for(int i=0; i<M; i++) { //M명에게 (a,b)쌍 받아오기
+			int a, b;
+			cin >> a >> b;
+			v.push_back({ a,b });
+		}
+
+		sort(v.begin(), v.end(), cmp); //b를 기준으로 오름차순 정렬
+
+		int ans = 0;
+		bool visited[1001] = { false };
+		for (int i = 0; i < M; i++) {
+			for (int j = v[i].first; j <= v[i].second; j++) {  //(a,b)에서 해당하는 책 중에 가장 작은 책을 주기
+				if (!visited[j]) {
+					visited[j] = true;
+					ans++;
+					break;
+				}
+			}
+		}
+
+		cout << ans << '\n';
+	}
+
+	return 0;
+}
