@@ -1,0 +1,54 @@
+//E-PPER대비 #하1 분해합
+
+/* 문제 분류: 브루트포스*/
+
+/* 문제 설명: 
+N의 분해합 = N과 N을 이루는 각 자리수의 합
+자연수 M의 분해합이 N인 경우, M을 N의 생성자라한다.
+예를 들어, 256의 생성자는 245가 가능하다 (245+2+4+5=256)
+
+자연수N이 주어졌을 때, N의 가장 작은 생성자를 구해라.
+*/
+
+/* 문제 풀이:
+N이 1,000,000미만이므로, int형 가능.
+*/
+
+/* 어려웠던 점 & 다시 한번 살펴볼 부분:
+자연수 n이 주어졌을 때, 그 수의 모든 자리수를 더하는 방법을 바로 생각하지 못했다.
+*/
+
+#include <iostream>
+using namespace std;
+
+//가장 작은 생성자 리턴
+int solution(int n) {
+  int answer = 0;
+
+	for(int i=1; i<n; i++) {
+		int tmp =i; //i는 가공하면 안되므로, tmp에 저장하고 tmp만 가공.
+		int sum = tmp;
+		
+		while(tmp>0) { //주어진 int에 대해 각자릿수의 합 구하기
+			sum+=(tmp%10);
+			tmp/=10;
+		}
+		
+		if(sum == n) {
+			answer=i;
+			break;
+		}
+	}
+    return answer;
+} 
+
+int main(void) {
+    int n;
+    //입력
+    cin >> n;
+    //연산
+    int answer = solution(n);
+    //출력
+    cout << answer;
+    return 0;
+}
