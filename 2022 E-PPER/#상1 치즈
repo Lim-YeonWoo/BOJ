@@ -23,3 +23,57 @@ N*M 배열에서, 치즈가 있는 부분이 주어지고,
 상하좌우를 다 따지기엔 시간복잡도가 문제의 기준을 초과할 것이라고 잘못 생각하였다.
 */
 
+#include <iostream>
+#include <vector>
+using namespace std;
+typedef pair<int,int> pair; //typedef로 별칭 지정
+
+//외부와 내부를 분리해서 표시해주는 dfs함수
+void divide_outside_dfs(int n, int m, int row, int col, vector<vector <int>> &board) {
+	
+}
+
+//이번에 녹을 치즈들을 찾아서 저장하는 함수
+vector<pair> find_cheese(int n, int m, vector<pair> list) {
+	
+}
+int solution(int n, int m, vector<vector<int>> b) {
+    int answer = 0; //시간
+ 
+	//외부공간표시
+	divide_outside_dfs(n,m,0,0,board);
+	
+	while(true) {
+		vector<pair> list = find_cheese(n,m,board); //이번에 녹을 치즈 저장
+		
+		if(list.empty()) break; //더이상 녹일 치즈가 없으면 break
+		
+		for(int i=0; i<list.size(); i++) { //녹는다고 저장해둔 치즈들을 한번에 녹이고, 새롭게 생긴 외부 공간 표시
+			int row = list[i].first;
+			int col = list[i].second;
+			
+			board[row][col]=0; //해당 치즈 녹임
+			
+			divide_outside_dfs(n,m,row,col,board); //새롭게 생긴 외부 공간 표시
+		}
+		
+		answer; //한시간 지남
+	}
+
+    return answer;
+}
+
+int main() {
+    int n, m, answer;
+  
+    vector<vector<int>> board_main;
+    cin >> n >> m;
+    board_main.assign(n, vector<int>(m));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++)
+            cin >> board_main[i][j];
+    }   
+    answer = solution(n, m, board_main);    
+    cout << answer;
+    return 0;
+}
