@@ -1,0 +1,67 @@
+//E-PPER대비 #하3 괄호
+
+/* 문제 분류: 스택*/
+
+/* 문제 설명: 
+알맞은 괄호 형태인지 골라라.
+*/
+
+/* 문제 풀이:
+( 가 나오면 스택에 push
+) 가 나오면 스택top을 pop
+  이때 스택이 비어있지 않으면 pop
+  스택이 비어있다면 not VPS
+ 마지막 괄호까지 읽고 작업했는데 스택이 비어있으면 VPS, 안비어있으면 not VPS.
+ 
+ 스택에는 ( 만 넣는 것이 포인트.
+*/
+
+/* 어려웠던 점 & 다시 한번 살펴볼 부분:
+.
+*/
+#include <iostream>
+#include <vector>
+#include <stack>
+using namespace std;
+//본 시험에서는 solution 코드와 별도로 필요한 함수만 작성합니다.
+vector<string> solution(int T, vector<string> inputs){
+  vector<string> answer;
+	bool flag;
+	
+	for(int t=0; t<T; t++) {
+		stack<char> s; //괄호를 저장할 스택 선언
+		flag = true;
+		
+		for(int i=0; i<inputs[t].size(); i++) {
+			if(inputs[t][i] == '(') s.push('('); //( 인 경우
+			else { // ) 인 경우
+				if(!s.empty()) s.pop(); //스택이 비어있지 않으면 pop
+				else { //스택이 비어있다면
+					flag = false; //VPS아님
+					break;
+				}
+			}
+		}
+		
+		if(flag && s.empty()) answer.push_back("YES");
+		else answer.push_back("NO");
+	}
+    return answer;
+}
+
+void show(int n, vector<string>answer){
+    int i;
+    //test 출력
+    for(i=0; i<n;i++)
+       cout << answer[i] << '\n';
+}
+//test 메인
+int main(){
+    int T;
+    cin >> T;
+    vector<string> inputs(T);
+    for (int i=0; i<T; i++) cin >> inputs[i];
+    vector<string> answer = solution(T, inputs);
+    show(T,answer);
+    return 0;
+}
