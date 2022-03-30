@@ -1,0 +1,80 @@
+// BOJ 12784 인하니카 공화국
+
+/* 문제 분류: 트리, DFS, dp */
+
+/* 문제 설명:
+모든 섬이 최소한의 다래개수로 연결되어있다. (모든 두섬끼리 연결됐다는 말 아님)
+1번섬을 제외한 다리가 하나밖에 없는 섬에서 1번섬으로의 경로를 차단하고싶음.
+각 다리마다 필요한 다이너마이트개수가 다름. (가중치 주어짐)
+이때, 최소한의 다이너마이트 개수를 구하자.
+*/
+
+/* 문제 풀이:
+리프노드들을 루트노드와 분리할때, 리프노드를 잘라도되고, 리프노드의 부모를 잘라도 된다.
+즉, dfs를 통해 그래프를 탐색하며 리프노드부터 1번노드까지 확인해, 가장 적은 비용을 자니 간선을 자르면 된다.
+*/
+
+/* 어려웠던 점 & 다시 한번 살펴볼 부분:
+*/
+
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+#define INF 20001
+using namespace std;
+
+vector<pair<int, int>> g[1001];
+//g[i]벡터= i노드와 연결된 노드 목록. {노드번호, 가중치}로 들어감.
+//g[i][].first = 노드번호, g[i][].second = 가중치
+int dp[1001];
+
+int dfs(int node, int parent) {
+	if (dp[node] == 0) { //dp가 초기값이면,
+		int res = INF;
+
+		// node-childs 간의 다이너마이트 선택
+		int sum = 0;
+		for (int i = 0; i < g[node].size(); i++) {
+			int child = g[node][i].first;
+			int childWeight = g[node][i].second;
+			if (child == parent) { // parent-node 간의 다이너마이트 선택
+				res = childWeight;
+				continue;
+			}
+
+			if (g[child].size() == 1) sum += childWeight;
+			else sum += dfs(child, node);
+		}
+		res = min(res, sum);
+
+		dp[node] = res;
+	}
+
+	return dp[node];
+}
+
+int main(void) {
+	ios::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+	int T;
+	cin >> T;
+
+	while (T--) {
+		int N, M;
+		cin >> N >> M;
+
+		for (int i = 0; i <= N; i++) { g[i].clear(); dp[i] = 0; } //그래프 초기화
+
+		int u, v, w;
+		for (int i = 0; i < M; i++) {
+			cin >> u >> v >> w;
+			g[u].push_back({ v,w }); //u노드에 간선을 넣기
+			g[v].push_back({ u,w }); //v노드에 간선을 넣기
+		}
+
+		cout << M? dfs(1, 0) : 0;
+	}
+
+	return 0;
+}
