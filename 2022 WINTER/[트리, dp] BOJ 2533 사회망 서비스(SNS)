@@ -1,0 +1,63 @@
+// BOJ 2533 사회망 서비스(SNS)
+
+/* 문제 분류: 트리, DP */
+
+/* 문제 설명:
+* 사람들을 노드, 두 노드를 잇는 엣지는 두 사람이 친구임.
+* 해당 친구그룹에서 가장 먼저 새로운 아이디어를 받아드린 사람이 얼리어답터.
+* 사회망 서비스에 속한 사람들은 얼리 아답터이거나 얼리 아답터가 아니다.
+* 얼리 아답터가 아닌 사람들은 자신의 모든 친구들이 얼리 아답터일 때만 이 아이디어를 받아들인다.
+*
+* 일반적인 그래프x, 트리인 경우만 보기. (모든 두 정점 사이에 이들을 잇는 경로가 존재하며 사이클이 존재하지 않는 경우만 보기)
+*
+* 모든 개인이 새로운 아이디어를 수용하기 위하여 필요한 최소 얼리 어답터의 수를 구하기.
+*/
+
+/* 문제 풀이:
+*	dp[node][0] : 해당 노드가 얼리 어답터일 경우, 본인 노드와 모든 자식노드 중 문제 조건을 만족하는 최소 얼리어답터 수
+*	dp[node][1] : 해당 노드가 일반인일 경우, 본인 노드와 모든 자식노드 중 문제 조건을 만족하는 최소 얼리어답터 수
+*
+*	dp[node][0], dp[node][1] 중 가장 작은 값이 답이 됨.
+*/
+
+/* 어려웠던 점 & 다시 한번 살펴볼 부분:
+*/
+
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+vector<int> e[1000001]; //그래프의 edge를 표시할 vector배열. e[u]벡터에 u정점과 연결된 정점목록이 들어있음.
+int dp[1000001][2]; //[][0]이 얼리어답터, [][1]이 not얼리어답터
+bool visited[1000001];
+
+void find(int x) { //x정점에 대해,
+	visited[x] = true; //방문했음을 표시
+	dp[x][0] = 1;
+	for (int i = 0; i < e[x].size(); i++) { //x정점의 자식노드들을 조사.
+		int child = e[x][i];
+		if (visited[child]) continue; //x정점의 부모노드들은 접근하지 않기 위함. (점점 위에서 아래로 내려가는 구조)
+		find(child);
+		dp[x][1] += dp[child][0];
+		dp[x][0] += min(dp[child][1], dp[child][0]);
+	}
+}
+
+int main(void) {
+	ios::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+	int n;
+	cin >> n;
+
+	int u, v;
+	for (int i = 0; i < n - 1; i++) {
+		cin >> u >> v;
+		e[u].push_back(v);
+		e[v].push_back(u);
+	}
+	find(1);
+	cout << min(dp[1][0], dp[1][1]);
+
+	return 0;
+}
