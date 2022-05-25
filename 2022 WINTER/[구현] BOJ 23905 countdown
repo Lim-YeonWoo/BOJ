@@ -1,0 +1,72 @@
+// BOJ 23905 countdown
+
+/* 문제 분류: 구현, 문자열*/
+
+/* 문제 설명:
+* N개의 정수에 대한 배열이 주어졌을 때, [K K-1 ... 1]인 sub-array개수를 구해라.
+*/
+
+/* 문제 풀이:
+*/
+
+/* 어려웠던 점 & 다시 한번 살펴볼 부분:
+* 1. test case마다 반복하는 것인데, v와 ans를 초기화해주지 않고 사용하면 문제가 된다.
+* 2. solve()함수에서, idx+i가 올바른 범위가 아닐때를 처리해주지 않아서 한번 틀렸었다.
+*/
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int T, N, K;
+vector<int> v;
+int ans = 0;
+
+void solve(int idx) {
+	bool flag = true;
+
+	for (int i = 0; i < K; i++) {
+		if (idx + i >= v.size()) { //올바른 범위가 아니면,
+			flag = false;
+			break;
+		}
+
+		if (v[idx+i] != K-i) { //K countdown이 아닌 순간 false로 바꾸고 break;
+			flag = false;
+			break;
+		}
+	}
+
+	if (flag == true)
+		ans++;
+}
+
+int main(void) {
+	ios::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+	cin >> T;
+	for(int t = 1; t <=T; t++) {
+		//0. 초기화
+		v.clear();
+		ans = 0; 
+
+		//1. 입력
+		cin >> N >> K;
+
+		int a;
+		for (int i = 0; i < N; i++) {
+			cin >> a;
+			v.push_back(a);
+		}
+
+		//2. K-countdown 있나 판단
+		for (int i = 0; i < N; i++) {
+			if (v[i] == K) {
+				solve(i);
+			}
+		}
+
+		printf("Case #%d: %d\n", t, ans);
+	}
+	return 0;
+}
