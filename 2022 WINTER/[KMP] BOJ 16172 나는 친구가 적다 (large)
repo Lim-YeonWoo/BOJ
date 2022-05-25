@@ -1,0 +1,87 @@
+// BOJ 16172 나는 친구가 적다 (large)
+
+/* 문제 분류: kmp*/
+
+/* 문제 설명:
+* 영어소문자, 영어대문자, 숫자가 섞인 문자열S에,
+* 숫자를 제거했을 때,
+* 영어소문자, 영어대문자로 이루어진 키워드K가 있는 지 탐색하라. 있으면 1, 없으면 0.
+* K <= S <= 200,000
+*/
+
+/* 문제 풀이:
+* 단순한 KMP.
+* 
+* 문자열에서 키워드를 탐색할 경우 그냥 무작정 탐색하면 O(N^2)이다.
+* KMP에서는 '실패함수' 개념을 도입해 빠르게 키워드를 탐색한다.
+* 
+* 이 실패함수는,
+* '문자 매칭에 실패했을 때, 얼만큼 건너뛰어야 하는가?'를 알기 위해 사용된다.
+* '문자 매칭에 실패하기 직전 상황에서, 접두사 / 접미사가 일치한 최대 길이'라고 풀이된다.
+*/
+
+/* 어려웠던 점 & 다시 한번 살펴볼 부분:
+* KMP알고리즘을 이해하기 어려웠다. 복습이 필요하다.
+* string 뒷부분에 문자를 연결할때는 +=을 이용한다.
+*/
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <string.h>
+
+typedef long long ll;
+using namespace std;
+
+//실패함수
+vector<int> getPi(string K) {
+	vector<int> pi(K.size(), 0);
+	for (int sur = 1, pre = 0; sur < K.size(); sur++) {
+		while (pre > 0 && K[sur] != K[pre]) pre = pi[--pre];
+		if (K[sur] == K[pre]) pi[sur] = ++pre;
+	}
+	return pi;
+}
+
+//KMP
+vector<int> kmp(string S, string K) {
+
+	vector<int> res;
+	vector<int> pi = getPi(K);
+
+	for (int i = 0, j = 0; i < S.size(); i++) {
+
+		while (j > 0 && S[i] != K[j]) j = pi[--j];
+
+		if (S[i] == K[j]) {
+
+			if (j + 1 == K.size()) {
+				res.push_back(i - j);
+				j = pi[j];
+			}
+			else j++;
+		}
+	}
+
+	return res;
+}
+
+int main() {
+	ios::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+	string S, K, real = "";
+
+	getline(cin, S);
+	getline(cin, K);
+
+	//숫자부분 제거한 string을 string real에 넣자.
+	//string 뒷부분에 연결할때는 +=을 이용한다.
+	for (int i = 0; i < S.size(); i++) 
+		if (!('0' <= S[i] && S[i] <= '9')) real += S[i];
+	
+	vector<int> res = kmp(real, K);
+	if (res.size()) cout << "1";
+	else cout << "0";
+
+	return 0;
+}
