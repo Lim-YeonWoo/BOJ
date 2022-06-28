@@ -23,6 +23,9 @@ Output
 For each test case, output a single integer — the value of x, as described in the statement. If there are multiple possible values of x, output any of them.
 */
 
+// XOR는 여러개 계산 시 교환법칙 성립가능
+// 0 이랑 XOR하면 원래 그대로
+
 #include <iostream>
 #include <vector>
 
