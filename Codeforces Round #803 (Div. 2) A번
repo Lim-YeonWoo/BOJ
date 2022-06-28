@@ -1,0 +1,73 @@
+//A
+//pretest passed (통과)
+/*
+A. XOR Mixup
+time limit per test1 second
+memory limit per test256 megabytes
+inputstandard input
+outputstandard output
+There is an array a with n−1 integers. Let x be the bitwise XOR of all elements of the array. The number x is added to the end of the array a (now it has length n), and then the elements are shuffled.
+
+You are given the newly formed array a. What is x? If there are multiple possible values of x, you can output any of them.
+
+Input
+The input consists of multiple test cases. The first line contains an integer t (1≤t≤1000) — the number of test cases. The description of the test cases follows.
+
+The first line of each test case contains an integer n (2≤n≤100) — the number of integers in the resulting array a.
+
+The second line of each test case contains n integers a1,a2,…,an (0≤ai≤127) — the elements of the newly formed array a.
+
+Additional constraint on the input: the array a is made by the process described in the statement; that is, some value of x exists.
+
+Output
+For each test case, output a single integer — the value of x, as described in the statement. If there are multiple possible values of x, output any of them.
+*/
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+	ios::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+	int T;
+	cin >> T;
+
+	while (T--) {
+		int len;
+		cin >> len;
+
+		vector<int> v;
+		int ans = 0;
+
+		//input
+		int tmp;
+		for (int i = 0; i < len; i++) {
+			cin >> tmp;
+			v.push_back(tmp);
+		}
+
+		//solve
+		unsigned int xor_result = 0;
+
+		for (int i = 0; i < len; i++) { //if i is x?
+			for (int j = 0; j < len; j++) {
+				if (j == i) continue;
+
+				xor_result = xor_result ^ v[j];
+			}
+
+			if (v[i] == xor_result) {
+				ans = i;
+				break;
+			}
+		}
+
+		//output
+		cout << v[ans] << "\n";
+		v.clear();
+	}
+
+	return 0;
+}
